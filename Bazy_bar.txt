@@ -1,0 +1,96 @@
+Bazy 
+     
+    Zapytania
+        (id_hotelu, id_pokoje, id sprzataj, id wynajmu )
+    Hotel
+        (id_hotelu, nazwa hotelu, id_pokoje)
+    poje
+        (id_pokoje, nr pokoju, pietro, standard, id_sprzataj, id_wynajmu)
+
+    Sprzatający
+        (id_sprzataj, Imie nazwisko, pakiet sprzątania, data, godzina)
+    
+    Wynajmujący
+        (id_wynajmu, Imie nazwisko wynajmujacego, data_rozpoczęcia, data_zakonczenia, godzina )
+
+
+
+        mysql
+
+
+
+
+
+// Tworzenie tabel
+
+
+CREATE TABLE hotel(
+    id_hotel int not null AUTO_INCREMENT PRIMARY KEY,
+    nazwa_hotelu varchar(30)
+    );
+
+CREATE TABLE pokoje(
+    id_pokoje int not null AUTO_INCREMENT PRIMARY KEY,
+    nr_pokoju int,
+    nr_pietra int,
+    nr_standardu int
+    );
+
+CREATE TABLE sprzatanie(
+    id_sprzatnia int not null AUTO_INCREMENT PRIMARY KEY,
+    Im_Naz_sprzatajacego varchar(30),
+    pakiet_sprzatania int
+    );
+
+
+CREATE TABLE wynajmujacy(
+    id_wynajmujacy int not null AUTO_INCREMENT PRIMARY KEY,
+    Im_Naz_Wyjanmujacego varchar(30)
+    );
+
+
+
+
+// Zapełnianie tablei 
+
+
+
+INSERT INTO hotel (nazwa_hotelu) VALUES('Olimp');
+INSERT INTO hotel (nazwa_hotelu) VALUES('Za kolumnami');
+INSERT INTO hotel (nazwa_hotelu) VALUES('Krakowiak');
+INSERT INTO hotel (nazwa_hotelu) VALUES('Dworzec PKP');
+
+
+INSERT INTO pokoje (nr_pokoju, nr_pietra, nr_standardu) VALUES(69, 6, 1);
+INSERT INTO pokoje (nr_pokoju, nr_pietra, nr_standardu) VALUES(22, 2, 3);
+INSERT INTO pokoje (nr_pokoju, nr_pietra, nr_standardu) VALUES(13, 1, 4);
+INSERT INTO pokoje (nr_pokoju, nr_pietra, nr_standardu) VALUES(33, 3, 2);
+
+
+
+
+INSERT INTO sprzatanie (Im_Naz_sprzatajacego, pakiet_sprzatania) VALUES('Kamil Staron' , 2);
+INSERT INTO sprzatanie (Im_Naz_sprzatajacego, pakiet_sprzatania) VALUES('Michał Jakubiec' , 1);
+INSERT INTO sprzatanie (Im_Naz_sprzatajacego, pakiet_sprzatania) VALUES('Afrodyta Swietojanska' , 4);
+
+INSERT INTO wynajmujacy (Im_Naz_Wyjanmujacego) VALUES('Jan Kowalski');
+INSERT INTO wynajmujacy (Im_Naz_Wyjanmujacego) VALUES('Jakub Michał');
+INSERT INTO wynajmujacy (Im_Naz_Wyjanmujacego) VALUES('Zbyszek Gonciarz');
+INSERT INTO wynajmujacy (Im_Naz_Wyjanmujacego) VALUES('Kamil Staron');
+
+
+
+// korelowanie 
+ALTER TABLE pokoje add column pakiet_sprzatania int;
+alter TABLE pokoje add COLUMN id_sprzatnia int;
+alter TABLE pokoje add COLUMN id_wynajmujacy int;
+ALTER TABLE hotel add column id_pokoje int;
+ALTER TABLE hotel add column nr_pokoju int;
+
+
+
+UPDATE pokoje SET id_sprzatnia=(SELECT sprzatanie.id_sprzatnia from sprzatanie WHERE pokoje.pakiet_sprzatania=sprzatanie.pakiet_sprzatania);
+ALTER TABLE pokoje DROP COLUMN pakiet_sprzatania;
+UPDATE pokoje SET id_wynajmujacy=(SELECT wynajmujacy.id_wynajmujacy from wynajmujacy WHERE pokoje.id_wynajmujacy=wynajmujacy.id_wynajmujacy);
+UPDATE hotel SET id_pokoje=(SELECT pokoje.id_pokoje from pokoje WHERE hotel.nr_pokoju=pokoje.nr_pokoju);
+ALTER TABLE hotel DROP COLUMN nr_pokoju;
